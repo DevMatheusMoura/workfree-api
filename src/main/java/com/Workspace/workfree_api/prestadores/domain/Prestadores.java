@@ -1,5 +1,6 @@
 package com.Workspace.workfree_api.prestadores.domain;
 
+import com.Workspace.workfree_api.prestadores.application.dto.PrestadoresRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -44,4 +45,35 @@ public class Prestadores {
     private String complemento;
 
     private LocalDateTime criadoEm = LocalDateTime.now();
+
+
+    public Prestadores(PrestadoresRequest prestadoresRequest) {
+        this.nomeCompleto = prestadoresRequest.getNomeCompleto();
+        this.cpf = prestadoresRequest.getCpf();
+        this.funcao = prestadoresRequest.getFuncao();
+        this.valorDiaria = prestadoresRequest.getValorDiaria();
+        this.telefone = prestadoresRequest.getTelefone();
+        this.cep = prestadoresRequest.getCep();
+        this.rua = prestadoresRequest.getRua();
+        this.numero = prestadoresRequest.getNumero();
+        this.bairro = prestadoresRequest.getBairro();
+        this.cidade = prestadoresRequest.getCidade();
+        this.uf = prestadoresRequest.getUf();
+        this.complemento = prestadoresRequest.getComplemento();
+    }
+
+    public void atualiza(PrestadoresRequest prestadoresRequest) {
+        this.nomeCompleto = prestadoresRequest.getNomeCompleto();
+        this.cpf = prestadoresRequest.getCpf();
+        this.funcao = prestadoresRequest.getFuncao();
+        this.valorDiaria = prestadoresRequest.getValorDiaria();
+        this.telefone = prestadoresRequest.getTelefone();
+        this.cep = prestadoresRequest.getCep();
+        this.rua = prestadoresRequest.getRua();
+        this.numero = prestadoresRequest.getNumero();
+        this.bairro = prestadoresRequest.getBairro();
+        this.cidade = prestadoresRequest.getCidade();
+        this.uf = prestadoresRequest.getUf();
+        this.complemento = prestadoresRequest.getComplemento();
+    }
 }
