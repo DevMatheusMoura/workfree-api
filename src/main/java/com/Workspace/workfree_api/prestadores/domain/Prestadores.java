@@ -1,6 +1,7 @@
 package com.Workspace.workfree_api.prestadores.domain;
 
 import com.Workspace.workfree_api.prestadores.application.dto.PrestadoresRequest;
+import com.Workspace.workfree_api.cep.domain.Address;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,16 +33,17 @@ public class Prestadores {
     private String telefone;
     @NotBlank(message = "CEP é obrigatório")
     private String cep;
-    @NotBlank(message = "Rua é obrigatório")
-    private String rua;
-    @NotBlank(message = "Número é obrigatório")
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "rua", column = @Column(name = "rua")),
+            @AttributeOverride(name = "bairro", column = @Column(name = "bairro")),
+            @AttributeOverride(name = "cidade", column = @Column(name = "cidade")),
+            @AttributeOverride(name = "uf", column = @Column(name = "uf"))
+    })
+    private Address endereco;
+
     private String numero;
-    @NotBlank(message = "Bairro é obrigatório")
-    private String bairro;
-    @NotBlank(message = "Cidade é obrigatório")
-    private String cidade;
-    @NotBlank(message =  "UF é obrigatório")
-    private String uf;
     private String complemento;
 
     private LocalDateTime criadoEm = LocalDateTime.now();
@@ -54,11 +56,8 @@ public class Prestadores {
         this.valorDiaria = prestadoresRequest.getValorDiaria();
         this.telefone = prestadoresRequest.getTelefone();
         this.cep = prestadoresRequest.getCep();
-        this.rua = prestadoresRequest.getRua();
+        this.endereco = new Address(prestadoresRequest.getRua(), prestadoresRequest.getBairro(), prestadoresRequest.getCidade(), prestadoresRequest.getUf());
         this.numero = prestadoresRequest.getNumero();
-        this.bairro = prestadoresRequest.getBairro();
-        this.cidade = prestadoresRequest.getCidade();
-        this.uf = prestadoresRequest.getUf();
         this.complemento = prestadoresRequest.getComplemento();
     }
 
@@ -69,11 +68,25 @@ public class Prestadores {
         this.valorDiaria = prestadoresRequest.getValorDiaria();
         this.telefone = prestadoresRequest.getTelefone();
         this.cep = prestadoresRequest.getCep();
-        this.rua = prestadoresRequest.getRua();
+        this.endereco = new Address(prestadoresRequest.getRua(), prestadoresRequest.getBairro(), prestadoresRequest.getCidade(), prestadoresRequest.getUf());
         this.numero = prestadoresRequest.getNumero();
-        this.bairro = prestadoresRequest.getBairro();
-        this.cidade = prestadoresRequest.getCidade();
-        this.uf = prestadoresRequest.getUf();
         this.complemento = prestadoresRequest.getComplemento();
+    }
+
+    // Delegating getters to keep existing DTOs working
+    public String getRua() {
+        return endereco != null ? endereco.getRua() : null;
+    }
+
+    public String getBairro() {
+        return endereco != null ? endereco.getBairro() : null;
+    }
+
+    public String getCidade() {
+        return endereco != null ? endereco.getCidade() : null;
+    }
+
+    public String getUf() {
+        return endereco != null ? endereco.getUf() : null;
     }
 }

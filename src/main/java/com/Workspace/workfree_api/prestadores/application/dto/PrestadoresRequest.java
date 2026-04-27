@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Value;
 import org.hibernate.validator.constraints.br.CPF;
+import com.Workspace.workfree_api.cep.domain.Address;
 
 import java.util.UUID;
 
@@ -26,17 +27,39 @@ public class PrestadoresRequest {
     private String telefone;
     @NotBlank(message = "CEP é obrigatório")
     private String cep;
-    @NotBlank(message = "Rua é obrigatório")
-    private String rua;
+    private String rua; // removido NotBlank para permitir enriquecimento
     @NotBlank(message = "Número é obrigatório")
     private String numero;
-    @NotBlank(message = "Bairro é obrigatório")
-    private String bairro;
-    @NotBlank(message = "Cidade é obrigatório")
-    private String cidade;
-    @NotBlank(message =  "UF é obrigatório")
-    private String uf;
+    private String bairro; // removido NotBlank
+    private String cidade; // removido NotBlank
+    private String uf; // removido NotBlank
     private String complemento;
 
+    // Método utilitário que cria uma nova instância substituindo apenas os campos de endereço
+    public PrestadoresRequest withAddress(Address address) {
+        if (address == null) {
+            return this;
+        }
+
+        String newRua = address.getRua() != null ? address.getRua() : this.rua;
+        String newBairro = address.getBairro() != null ? address.getBairro() : this.bairro;
+        String newCidade = address.getCidade() != null ? address.getCidade() : this.cidade;
+        String newUf = address.getUf() != null ? address.getUf() : this.uf;
+
+        return new PrestadoresRequest(
+                this.nomeCompleto,
+                this.cpf,
+                this.funcao,
+                this.valorDiaria,
+                this.telefone,
+                this.cep,
+                newRua,
+                this.numero,
+                newBairro,
+                newCidade,
+                newUf,
+                this.complemento
+        );
+    }
 
 }

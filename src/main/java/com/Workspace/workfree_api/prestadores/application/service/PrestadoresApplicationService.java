@@ -6,6 +6,7 @@ import com.Workspace.workfree_api.prestadores.application.dto.PrestadoresRequest
 import com.Workspace.workfree_api.prestadores.application.dto.PrestadoresResponse;
 import com.Workspace.workfree_api.prestadores.domain.Prestadores;
 import com.Workspace.workfree_api.prestadores.repository.PrestadoresRepository;
+import com.Workspace.workfree_api.cep.service.CepService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,16 @@ import java.util.UUID;
 public class PrestadoresApplicationService implements PrestadoresService {
 
     private final PrestadoresRepository prestadoresRepository;
+    private final CepService cepService; // ADICIONADO
 
     @Override
     public PrestadoresResponse criaPrestadores(PrestadoresRequest prestadoresRequest) {
         log.info("[inicia] PrestadoresApplicationService - criaPrestadores");
-        Prestadores prestadores = prestadoresRepository.salva(new Prestadores(prestadoresRequest));
+        PrestadoresRequest atualizada = cepService.buscarCep(prestadoresRequest.getCep())
+                .map(address -> prestadoresRequest.withAddress(address))
+                .orElse(prestadoresRequest);
+
+        Prestadores prestadores = prestadoresRepository.salva(new Prestadores(atualizada));
         log.info("[finaliza] PrestadoresApplicationService - criaPrestadores");
         return PrestadoresResponse.builder()
                 .idPrestadores(prestadores.getIdPrestadores())
@@ -57,8 +63,13 @@ public class PrestadoresApplicationService implements PrestadoresService {
     @Override
     public void editaPrestador(UUID idPrestadores, PrestadoresRequest prestadoresRequest) {
         log.info("[inicia] PrestadoresApplicationService - editaPrestador");
+
+        PrestadoresRequest atualizada = cepService.buscarCep(prestadoresRequest.getCep())
+                .map(address -> prestadoresRequest.withAddress(address))
+                .orElse(prestadoresRequest);
+
         Prestadores prestador = prestadoresRepository.buscaPrestadoresPorId(idPrestadores);
-        prestador.atualiza(prestadoresRequest);
+        prestador.atualiza(atualizada);
         prestadoresRepository.salva(prestador);
         log.info("[finaliza] PrestadoresApplicationService - editaPrestador");
     }
