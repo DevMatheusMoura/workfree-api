@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: workfree
+      POSTGRES_USER: workfree
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  wiremock:
+    image: wiremock/wiremock:2.35.0
+    container_name: wiremock
+    restart: unless-stopped
+    ports:
+      - "8089:8080"
+    volumes:
+      - ./docker/wiremock/mappings:/home/wiremock/mappings:ro
+
+  app:
+    build: .
+    container_name: workfree-api
+    restart: unless-stopped
+    depends_on:
+      - db
+      - wiremock
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/workfree
+      SPRING_DATASOURCE_USERNAME: workfree
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+      SPRING_APPLICATION_JSON: '{"external":{"cep":{"base-url":"http://wiremock:8080/ws"}}}'
+    ports:
+      - "8080:8080"
+
+volumes:
+  db_data:

@@ -1,3 +1,20 @@
 spring:
   application:
     name: workfree-api
+  datasource:
+    # Use environment variables in production/containers. Defaults point to a local Postgres instance.
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/workfree}
+    username: ${SPRING_DATASOURCE_USERNAME:workfree}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+external:
+  cep:
+    base-url: http://localhost:8089/ws
