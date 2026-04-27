@@ -6,6 +6,10 @@ Workfree API é uma API para cadastro de Prestadores de serviços que atuam como
 
 > Observação: instruções em Windows (cmd.exe). Ajuste para bash se estiver usando macOS/Linux.
 
+
+ <img width="1281" height="251" alt="Workfree-API drawio" src="https://github.com/user-attachments/assets/b0747966-dc17-443f-8634-21afa0441efd" />
+
+
 ## Pré-requisitos
 
 - Java 17 (JDK) instalado localmente se for usar Maven localmente.
